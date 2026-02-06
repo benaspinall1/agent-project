@@ -401,10 +401,136 @@ This must be exported **before** launching Tau-Bench experiments.
 
 ### Option A: Slurm Job Array (Recommended for Sweeps)
 
-Run a full experiment sweep using a job array:
+Run a using a job array (This command does not assume that you start at 0 and end at 119. Choose any sub array below):
 
 ```bash
 sbatch --array=0-119 tau-experiment.sh
+
+
+
+| Index | ENV     | AGENT | ASSIST_MODEL                 | TRIAL |
+| ----- | ------- | ----- | ---------------------------- | ----- |
+| 0     | airline | act   | Qwen/Qwen3-4B-Instruct-2507  | 1     |
+| 1     | airline | act   | Qwen/Qwen3-4B-Instruct-2507  | 2     |
+| 2     | airline | act   | Qwen/Qwen3-4B-Instruct-2507  | 3     |
+| 3     | airline | act   | Qwen/Qwen3-4B-Instruct-2507  | 4     |
+| 4     | airline | act   | Qwen/Qwen3-4B-Instruct-2507  | 5     |
+| 5     | airline | act   | Qwen/Qwen3-8B-Instruct-2507  | 1     |
+| 6     | airline | act   | Qwen/Qwen3-8B-Instruct-2507  | 2     |
+| 7     | airline | act   | Qwen/Qwen3-8B-Instruct-2507  | 3     |
+| 8     | airline | act   | Qwen/Qwen3-8B-Instruct-2507  | 4     |
+| 9     | airline | act   | Qwen/Qwen3-8B-Instruct-2507  | 5     |
+| 10    | airline | act   | Qwen/Qwen3-14B-Instruct-2507 | 1     |
+| 11    | airline | act   | Qwen/Qwen3-14B-Instruct-2507 | 2     |
+| 12    | airline | act   | Qwen/Qwen3-14B-Instruct-2507 | 3     |
+| 13    | airline | act   | Qwen/Qwen3-14B-Instruct-2507 | 4     |
+| 14    | airline | act   | Qwen/Qwen3-14B-Instruct-2507 | 5     |
+| 15    | airline | act   | Qwen/Qwen3-32B-Instruct-2507 | 1     |
+| 16    | airline | act   | Qwen/Qwen3-32B-Instruct-2507 | 2     |
+| 17    | airline | act   | Qwen/Qwen3-32B-Instruct-2507 | 3     |
+| 18    | airline | act   | Qwen/Qwen3-32B-Instruct-2507 | 4     |
+| 19    | airline | act   | Qwen/Qwen3-32B-Instruct-2507 | 5     |
+| 20    | airline | react | Qwen/Qwen3-4B-Instruct-2507  | 1     |
+| 21    | airline | react | Qwen/Qwen3-4B-Instruct-2507  | 2     |
+| 22    | airline | react | Qwen/Qwen3-4B-Instruct-2507  | 3     |
+| 23    | airline | react | Qwen/Qwen3-4B-Instruct-2507  | 4     |
+| 24    | airline | react | Qwen/Qwen3-4B-Instruct-2507  | 5     |
+| 25    | airline | react | Qwen/Qwen3-8B-Instruct-2507  | 1     |
+| 26    | airline | react | Qwen/Qwen3-8B-Instruct-2507  | 2     |
+| 27    | airline | react | Qwen/Qwen3-8B-Instruct-2507  | 3     |
+| 28    | airline | react | Qwen/Qwen3-8B-Instruct-2507  | 4     |
+| 29    | airline | react | Qwen/Qwen3-8B-Instruct-2507  | 5     |
+| 30    | airline | react | Qwen/Qwen3-14B-Instruct-2507 | 1     |
+| 31    | airline | react | Qwen/Qwen3-14B-Instruct-2507 | 2     |
+| 32    | airline | react | Qwen/Qwen3-14B-Instruct-2507 | 3     |
+| 33    | airline | react | Qwen/Qwen3-14B-Instruct-2507 | 4     |
+| 34    | airline | react | Qwen/Qwen3-14B-Instruct-2507 | 5     |
+| 35    | airline | react | Qwen/Qwen3-32B-Instruct-2507 | 1     |
+| 36    | airline | react | Qwen/Qwen3-32B-Instruct-2507 | 2     |
+| 37    | airline | react | Qwen/Qwen3-32B-Instruct-2507 | 3     |
+| 38    | airline | react | Qwen/Qwen3-32B-Instruct-2507 | 4     |
+| 39    | airline | react | Qwen/Qwen3-32B-Instruct-2507 | 5     |
+| 40    | airline | fc    | Qwen/Qwen3-4B-Instruct-2507  | 1     |
+| 41    | airline | fc    | Qwen/Qwen3-4B-Instruct-2507  | 2     |
+| 42    | airline | fc    | Qwen/Qwen3-4B-Instruct-2507  | 3     |
+| 43    | airline | fc    | Qwen/Qwen3-4B-Instruct-2507  | 4     |
+| 44    | airline | fc    | Qwen/Qwen3-4B-Instruct-2507  | 5     |
+| 45    | airline | fc    | Qwen/Qwen3-8B-Instruct-2507  | 1     |
+| 46    | airline | fc    | Qwen/Qwen3-8B-Instruct-2507  | 2     |
+| 47    | airline | fc    | Qwen/Qwen3-8B-Instruct-2507  | 3     |
+| 48    | airline | fc    | Qwen/Qwen3-8B-Instruct-2507  | 4     |
+| 49    | airline | fc    | Qwen/Qwen3-8B-Instruct-2507  | 5     |
+| 50    | airline | fc    | Qwen/Qwen3-14B-Instruct-2507 | 1     |
+| 51    | airline | fc    | Qwen/Qwen3-14B-Instruct-2507 | 2     |
+| 52    | airline | fc    | Qwen/Qwen3-14B-Instruct-2507 | 3     |
+| 53    | airline | fc    | Qwen/Qwen3-14B-Instruct-2507 | 4     |
+| 54    | airline | fc    | Qwen/Qwen3-14B-Instruct-2507 | 5     |
+| 55    | airline | fc    | Qwen/Qwen3-32B-Instruct-2507 | 1     |
+| 56    | airline | fc    | Qwen/Qwen3-32B-Instruct-2507 | 2     |
+| 57    | airline | fc    | Qwen/Qwen3-32B-Instruct-2507 | 3     |
+| 58    | airline | fc    | Qwen/Qwen3-32B-Instruct-2507 | 4     |
+| 59    | airline | fc    | Qwen/Qwen3-32B-Instruct-2507 | 5     |
+| 60    | retail  | act   | Qwen/Qwen3-4B-Instruct-2507  | 1     |
+| 61    | retail  | act   | Qwen/Qwen3-4B-Instruct-2507  | 2     |
+| 62    | retail  | act   | Qwen/Qwen3-4B-Instruct-2507  | 3     |
+| 63    | retail  | act   | Qwen/Qwen3-4B-Instruct-2507  | 4     |
+| 64    | retail  | act   | Qwen/Qwen3-4B-Instruct-2507  | 5     |
+| 65    | retail  | act   | Qwen/Qwen3-8B-Instruct-2507  | 1     |
+| 66    | retail  | act   | Qwen/Qwen3-8B-Instruct-2507  | 2     |
+| 67    | retail  | act   | Qwen/Qwen3-8B-Instruct-2507  | 3     |
+| 68    | retail  | act   | Qwen/Qwen3-8B-Instruct-2507  | 4     |
+| 69    | retail  | act   | Qwen/Qwen3-8B-Instruct-2507  | 5     |
+| 70    | retail  | act   | Qwen/Qwen3-14B-Instruct-2507 | 1     |
+| 71    | retail  | act   | Qwen/Qwen3-14B-Instruct-2507 | 2     |
+| 72    | retail  | act   | Qwen/Qwen3-14B-Instruct-2507 | 3     |
+| 73    | retail  | act   | Qwen/Qwen3-14B-Instruct-2507 | 4     |
+| 74    | retail  | act   | Qwen/Qwen3-14B-Instruct-2507 | 5     |
+| 75    | retail  | act   | Qwen/Qwen3-32B-Instruct-2507 | 1     |
+| 76    | retail  | act   | Qwen/Qwen3-32B-Instruct-2507 | 2     |
+| 77    | retail  | act   | Qwen/Qwen3-32B-Instruct-2507 | 3     |
+| 78    | retail  | act   | Qwen/Qwen3-32B-Instruct-2507 | 4     |
+| 79    | retail  | act   | Qwen/Qwen3-32B-Instruct-2507 | 5     |
+| 80    | retail  | react | Qwen/Qwen3-4B-Instruct-2507  | 1     |
+| 81    | retail  | react | Qwen/Qwen3-4B-Instruct-2507  | 2     |
+| 82    | retail  | react | Qwen/Qwen3-4B-Instruct-2507  | 3     |
+| 83    | retail  | react | Qwen/Qwen3-4B-Instruct-2507  | 4     |
+| 84    | retail  | react | Qwen/Qwen3-4B-Instruct-2507  | 5     |
+| 85    | retail  | react | Qwen/Qwen3-8B-Instruct-2507  | 1     |
+| 86    | retail  | react | Qwen/Qwen3-8B-Instruct-2507  | 2     |
+| 87    | retail  | react | Qwen/Qwen3-8B-Instruct-2507  | 3     |
+| 88    | retail  | react | Qwen/Qwen3-8B-Instruct-2507  | 4     |
+| 89    | retail  | react | Qwen/Qwen3-8B-Instruct-2507  | 5     |
+| 90    | retail  | react | Qwen/Qwen3-14B-Instruct-2507 | 1     |
+| 91    | retail  | react | Qwen/Qwen3-14B-Instruct-2507 | 2     |
+| 92    | retail  | react | Qwen/Qwen3-14B-Instruct-2507 | 3     |
+| 93    | retail  | react | Qwen/Qwen3-14B-Instruct-2507 | 4     |
+| 94    | retail  | react | Qwen/Qwen3-14B-Instruct-2507 | 5     |
+| 95    | retail  | react | Qwen/Qwen3-32B-Instruct-2507 | 1     |
+| 96    | retail  | react | Qwen/Qwen3-32B-Instruct-2507 | 2     |
+| 97    | retail  | react | Qwen/Qwen3-32B-Instruct-2507 | 3     |
+| 98    | retail  | react | Qwen/Qwen3-32B-Instruct-2507 | 4     |
+| 99    | retail  | react | Qwen/Qwen3-32B-Instruct-2507 | 5     |
+| 100   | retail  | fc    | Qwen/Qwen3-4B-Instruct-2507  | 1     |
+| 101   | retail  | fc    | Qwen/Qwen3-4B-Instruct-2507  | 2     |
+| 102   | retail  | fc    | Qwen/Qwen3-4B-Instruct-2507  | 3     |
+| 103   | retail  | fc    | Qwen/Qwen3-4B-Instruct-2507  | 4     |
+| 104   | retail  | fc    | Qwen/Qwen3-4B-Instruct-2507  | 5     |
+| 105   | retail  | fc    | Qwen/Qwen3-8B-Instruct-2507  | 1     |
+| 106   | retail  | fc    | Qwen/Qwen3-8B-Instruct-2507  | 2     |
+| 107   | retail  | fc    | Qwen/Qwen3-8B-Instruct-2507  | 3     |
+| 108   | retail  | fc    | Qwen/Qwen3-8B-Instruct-2507  | 4     |
+| 109   | retail  | fc    | Qwen/Qwen3-8B-Instruct-2507  | 5     |
+| 110   | retail  | fc    | Qwen/Qwen3-14B-Instruct-2507 | 1     |
+| 111   | retail  | fc    | Qwen/Qwen3-14B-Instruct-2507 | 2     |
+| 112   | retail  | fc    | Qwen/Qwen3-14B-Instruct-2507 | 3     |
+| 113   | retail  | fc    | Qwen/Qwen3-14B-Instruct-2507 | 4     |
+| 114   | retail  | fc    | Qwen/Qwen3-14B-Instruct-2507 | 5     |
+| 115   | retail  | fc    | Qwen/Qwen3-32B-Instruct-2507 | 1     |
+| 116   | retail  | fc    | Qwen/Qwen3-32B-Instruct-2507 | 2     |
+| 117   | retail  | fc    | Qwen/Qwen3-32B-Instruct-2507 | 3     |
+| 118   | retail  | fc    | Qwen/Qwen3-32B-Instruct-2507 | 4     |
+| 119   | retail  | fc    | Qwen/Qwen3-32B-Instruct-2507 | 5     |
+
 ```
 
 This is typically used when running many trials or configurations in parallel.
