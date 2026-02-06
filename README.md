@@ -1,5 +1,47 @@
 # Tau-Bench Experiment Execution Workflow
 
+## Jupyter Session Request
+
+Account
+```
+class_class59827694spring_2026
+```
+
+Partition
+```
+gaudi
+```
+QOS
+```
+class_gaudi
+```
+
+CPU Core Allocation
+```
+20
+```
+Memory Allocation (GiB)
+```
+40
+```
+
+GPU Resources
+```
+gpu:hl225:1
+```
+
+Jupyter Wall Time (your choice)
+```
+0-#
+```
+
+Jupyter lab version
+```
+latest
+```
+
+
+
 ## Project Folder Structure Overview
 
 This repository is organized so that **model servers**, **Slurm job scripts**, and **experiment drivers** are clearly separated. Understanding this layout makes it easier to debug failures and onboard new contributors.
