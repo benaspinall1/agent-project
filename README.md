@@ -3,44 +3,52 @@
 ## Jupyter Session Request
 
 Account
+
 ```
 class_class59827694spring_2026
 ```
 
 Partition
+
 ```
 gaudi
 ```
+
 QOS
+
 ```
 class_gaudi
 ```
 
 CPU Core Allocation
+
 ```
 20
 ```
+
 Memory Allocation (GiB)
+
 ```
 40
 ```
 
 GPU Resources
+
 ```
 gpu:hl225:1
 ```
 
 Jupyter Wall Time (your choice)
+
 ```
 0-#
 ```
 
 Jupyter lab version
+
 ```
 latest
 ```
-
-
 
 ## Project Folder Structure Overview (In Sol not GitHub)
 
@@ -55,7 +63,7 @@ This repository is organized so that **model servers**, **Slurm job scripts**, a
 │
 ├── logs/                      # Slurm stdout logs for servers and experiments
 ├── errors/                    # Slurm stderr logs for servers and experiments
-├── results/                   # Home for the json files 
+├── results/                   # Home for the json files
 └── tau-bench/                 # Tau-Bench codebase
 
 ```
@@ -348,6 +356,8 @@ Submit the Slurm job that launches the **user model** vLLM server:
 sbatch user-vllm-job.sh
 ```
 
+![Commad output](photos/job-id.png.jpg)
+
 After submission, monitor the logs to confirm the server is running:
 
 ```bash
@@ -371,6 +381,7 @@ Once running, verify that the OpenAI-compatible API endpoint is live:
 ```bash
 curl -s http://gaudi001:8007/v1/models | jq
 ```
+
 > ⚠️ IMPORTANT: Dont just copy and paste this command withouth making sure it matches the **User server base** from the **user_vllm_jobid.out**
 
 You should see a JSON response listing the specs of the user model.
