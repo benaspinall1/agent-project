@@ -42,7 +42,7 @@ latest
 
 
 
-## Project Folder Structure Overview
+## Project Folder Structure Overview (In Sol not GitHub)
 
 This repository is organized so that **model servers**, **Slurm job scripts**, and **experiment drivers** are clearly separated. Understanding this layout makes it easier to debug failures and onboard new contributors.
 
@@ -53,13 +53,10 @@ This repository is organized so that **model servers**, **Slurm job scripts**, a
 ├── user-vllm-job.sh           # Slurm job wrapper for starting the user vLLM server
 ├── tau-experiment.sh          # Main Slurm job script that runs Tau-Bench
 │
-├── logs/                     # Slurm stdout logs for servers and experiments
-│ 
-├── errors/                     # Slurm stderr logs for servers and experiments
-│
-├── results/                    # Home for the json files 
-│
-└── tau-bench/                  # Tau-Bench codebase
+├── logs/                      # Slurm stdout logs for servers and experiments
+├── errors/                    # Slurm stderr logs for servers and experiments
+├── results/                   # Home for the json files 
+└── tau-bench/                 # Tau-Bench codebase
 
 ```
 
