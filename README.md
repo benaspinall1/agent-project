@@ -53,19 +53,14 @@ This repository is organized so that **model servers**, **Slurm job scripts**, a
 ├── user-vllm-job.sh           # Slurm job wrapper for starting the user vLLM server
 ├── tau-experiment.sh          # Main Slurm job script that runs Tau-Bench
 │
-├── logs/                       # Slurm stdout/stderr logs for servers and experiments
-│   ├── user_vllm_<jobid>.out
-│   ├── assistant_vllm_<jobid>.out
-│   └── run_<env>_<strategy>_<model>_<jobid>.log
+├── logs/                     # Slurm stdout logs for servers and experiments
+│ 
+├── errors/                     # Slurm stderr logs for servers and experiments
 │
-├── tau-bench/                  # Tau-Bench codebase
-│   ├── run.py                  # Entry point for Tau-Bench experiments
-│   ├── envs/                   # Task environments (retail, airline, etc.)
-│   ├── agents/                 # Agent strategies (react, llm, etc.)
-│   └── configs/                # Environment- and model-specific configs
+├── results/                    # Home for the json files 
 │
-├── experiments/                # (Optional) Aggregated outputs, metrics, and artifacts
-└── README.md                   # Project-level documentation
+└── tau-bench/                  # Tau-Bench codebase
+
 ```
 
 ### Key Ideas
@@ -379,6 +374,7 @@ Once running, verify that the OpenAI-compatible API endpoint is live:
 ```bash
 curl -s http://gaudi001:8007/v1/models | jq
 ```
+> ⚠️ IMPORTANT: Dont just copy and paste this command withouth making sure it matches the **User server base** from the **user_vllm_jobid.out**
 
 You should see a JSON response listing the specs of the user model.
 
@@ -389,7 +385,6 @@ You should see a JSON response listing the specs of the user model.
 Set the environment variable that Tau-Bench uses to locate the **user model** endpoint:
 
 ```bash
-cd ~/agent-project
 export USER_MODEL_API_BASE="http://gaudi001:8007/v1"
 ```
 
@@ -401,7 +396,7 @@ This must be exported **before** launching Tau-Bench experiments.
 
 ### Option A: Slurm Job Array (Recommended for Sweeps)
 
-Run a using a job array (This command does not assume that you start at 0 and end at 119. Choose any sub array below):
+Run using a job array (This command does not assume that you start at 0 and end at 119. Choose any sub array below):
 
 ```bash
 sbatch --array=0-119 tau-experiment.sh
