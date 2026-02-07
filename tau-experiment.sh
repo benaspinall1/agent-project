@@ -187,10 +187,8 @@ echo
 RESULTS_SUBDIR="${BASE_RESULTS_DIR}/${ENV_NAME}/${AGENT_STRAT_INPUT}/${MODEL_SIZE}"
 mkdir -p "${RESULTS_SUBDIR}"
 
-RUN_DIR="${RESULTS_SUBDIR}/${ASSIST_SAFE}_trials${NUM_TRIALS_VAL}"
-mkdir -p "$RUN_DIR"
 
-echo "Results directory:   $RUN_DIR"
+echo "Results directory:   $RESULTS_SUBDIR"
 echo
 
 #########################################
@@ -290,7 +288,7 @@ echo
 
 # Usage: set START_INDEX for resume; call before the python run.
 set_start_index_from_checkpoint() {
-  local ckpt="${RUN_DIR}/num_trials-${NUM_TRIALS_VAL}.json"
+  local ckpt="${RESULTS_SUBDIR}/num_trials-${NUM_TRIALS_VAL}.json"
   START_INDEX=0
   if [[ -f "$ckpt" ]]; then
     local max_id
@@ -316,7 +314,7 @@ python run.py \
   --end-index -1 \
   --max-concurrency 1 \
   --num-trials "$NUM_TRIALS_VAL" \
-  --log-dir "$RUN_DIR" \
+  --log-dir "$RESULTS_SUBDIR" \
 
 TB_EXIT=$?
 
