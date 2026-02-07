@@ -356,16 +356,8 @@ Submit the Slurm job that launches the **user model** vLLM server:
 sbatch user-vllm-job.sh
 ```
 
-![Commad output](photos/job-id.png.jpg)
-
-After submission, monitor the logs to confirm the server is running:
-
-```bash
-tail -n 20 logs/user_vllm_<jobid>.out
-```
-
-You should see some output that looks like the snippet below. If not, go into the **logs** directory and
-scroll to the top of the file with this filename structure: "user_vllm_jobid.out"
+After submission, go into the **logs** directory and
+scroll to the top of the file with this filename structure: "user_vllm_jobid.out". You should see the following output:
 
 ```
 ====================================
@@ -376,17 +368,15 @@ User server base: http://gaudi001:8007/v1
 ...
 ```
 
-Once running, verify that the OpenAI-compatible API endpoint is live:
+Verify that the user model is live at the gaudi endpoint:
 
 ```bash
 curl -s http://gaudi001:8007/v1/models | jq
 ```
 
-> ⚠️ IMPORTANT: Dont just copy and paste this command withouth making sure it matches the **User server base** from the **user_vllm_jobid.out**
+> ⚠️ IMPORTANT: If you copy and paste this command make sure the port number matches the **User server base** from the **user_vllm_jobid.out** file
 
 You should see a JSON response listing the specs of the user model.
-
----
 
 ```json
 {
@@ -428,8 +418,6 @@ Set the environment variable that Tau-Bench uses to locate the **user model** en
 ```bash
 export USER_MODEL_API_BASE="http://gaudi001:8007/v1"
 ```
-
-This must be exported **before** launching Tau-Bench experiments.
 
 ---
 
