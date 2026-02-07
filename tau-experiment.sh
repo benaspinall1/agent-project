@@ -290,9 +290,11 @@ echo
 # Updated to:
 #   - If any .info.error exists -> resume from FIRST error task_id
 #   - Else -> resume from (max task_id + 1)
+#   - If last task (total_tasks-1) already completed -> set SKIP_RUN=1 so we don't re-run
 set_start_index_from_checkpoint() {
   local ckpt="${RESULTS_SUBDIR}/num_trials-${NUM_TRIALS_VAL}.json"
   START_INDEX=0
+  SKIP_RUN=0
 
   if [[ -f "$ckpt" ]]; then
     # first task_id with a non-empty .info.error, if any
@@ -311,6 +313,11 @@ set_start_index_from_checkpoint() {
       # No errors; continue after last successful task
       START_INDEX=$((max_id + 1))
       echo "Resuming: last completed task_id=$max_id, --start-index=$START_INDEX"
+      # All tasks done (zero-indexed last task_id = TOTAL_TASKS - 1)? Skip run to avoid starting over.
+      if [[ "$START_INDEX" -ge "$TOTAL_TASKS" ]]; then
+        SKIP_RUN=1
+        echo "All tasks already completed (last task_id=$max_id, total_tasks=$TOTAL_TASKS). Skipping run."
+      fi
     else
       echo "Checkpoint exists but could not determine task_ids; starting from 0."
       START_INDEX=0
@@ -320,8 +327,19 @@ set_start_index_from_checkpoint() {
   fi
 }
 
+# Total tasks (test split): retail=115, airline=50 (zero-indexed: 0..114, 0..49)
+case "$ENV_NAME" in
+  retail)  TOTAL_TASKS=115 ;;
+  airline) TOTAL_TASKS=50 ;;
+  *)       TOTAL_TASKS=0 ;;
+esac
+
 set_start_index_from_checkpoint
 
+if [[ "${SKIP_RUN:-0}" -eq 1 ]]; then
+  echo "Skipping Tau-Bench run (already finished)."
+  TB_EXIT=0
+else
 python run.py \
   --agent-strategy "$AGENT_STRAT_CLI" \
   --env "$ENV_NAME" \
@@ -338,6 +356,7 @@ python run.py \
   --log-dir "$RESULTS_SUBDIR" \
 
 TB_EXIT=$?
+fi
 
 #########################################
 # CLEANUP
