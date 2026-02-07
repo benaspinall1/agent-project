@@ -210,11 +210,11 @@ sbatch --array=0-119 tau-experiment.sh
 # Copy any line below to run that experiment
 # Each command ends with its task id for job array submissions
 
-sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 1    # 0 ben
-sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 2    # 1 ben
-sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 3    # 2 ben
-sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 4    # 3 ben
-sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 5    # 4 ben
+sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 1    # 0 ben (Done✅)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 2    # 1 ben (Done✅)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 3    # 2 ben (Done✅)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 4    # 3 ben (Done✅)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 5    # 4 ben (Done✅)
 sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 1    # 5
 sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 2    # 6
 sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 3    # 7
@@ -230,11 +230,11 @@ sbatch tau-experiment.sh airline act Qwen/Qwen3-32B-Instruct-2507 2   # 16
 sbatch tau-experiment.sh airline act Qwen/Qwen3-32B-Instruct-2507 3   # 17
 sbatch tau-experiment.sh airline act Qwen/Qwen3-32B-Instruct-2507 4   # 18
 sbatch tau-experiment.sh airline act Qwen/Qwen3-32B-Instruct-2507 5   # 19
-sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 1  # 20 ben
-sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 2  # 21 ben 
-sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 3  # 22 ben
-sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 4  # 23 ben
-sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 5  # 24 ben
+sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 1  # 20 ben (Done✅)
+sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 2  # 21 ben (Done✅)
+sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 3  # 22 ben (Done✅)
+sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 4  # 23 ben (Done✅)
+sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 5  # 24 ben (Done✅)
 sbatch tau-experiment.sh airline react Qwen/Qwen3-8B-Instruct-2507 1  # 25
 sbatch tau-experiment.sh airline react Qwen/Qwen3-8B-Instruct-2507 2  # 26
 sbatch tau-experiment.sh airline react Qwen/Qwen3-8B-Instruct-2507 3  # 27
@@ -250,11 +250,11 @@ sbatch tau-experiment.sh airline react Qwen/Qwen3-32B-Instruct-2507 2 # 36
 sbatch tau-experiment.sh airline react Qwen/Qwen3-32B-Instruct-2507 3 # 37
 sbatch tau-experiment.sh airline react Qwen/Qwen3-32B-Instruct-2507 4 # 38
 sbatch tau-experiment.sh airline react Qwen/Qwen3-32B-Instruct-2507 5 # 39
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 1     # 40 ben
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 2     # 41 ben
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 3     # 42 ben
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 4     # 43 ben
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 5     # 44 ben
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 1     # 40 ben (Running)
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 2     # 41 ben (Running)
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 3     # 42 ben (Running)
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 4     # 43 ben (Running)
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 5     # 44 ben (Running)
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 1     # 45
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 2     # 46
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 3     # 47
