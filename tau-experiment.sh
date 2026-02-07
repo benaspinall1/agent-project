@@ -294,21 +294,28 @@ echo
 set_start_index_from_checkpoint() {
   local ckpt="${RESULTS_SUBDIR}/num_trials-${NUM_TRIALS_VAL}.json"
   START_INDEX=0
+  END_INDEX=-1
   SKIP_RUN=0
 
   if [[ -f "$ckpt" ]]; then
-    # first task_id with a non-empty .info.error, if any
-    local error_start
+    # first and last task_id with a non-empty .info.error, if any
+    local error_start error_end
     error_start=$(jq -r '[.[] | select(.info.error != null and .info.error != "") | .task_id] | min // empty' "$ckpt" 2>/dev/null || true)
+    error_end=$(jq -r '[.[] | select(.info.error != null and .info.error != "") | .task_id] | max // empty' "$ckpt" 2>/dev/null || true)
 
     # max task_id overall
     local max_id
     max_id=$(jq -r '[.[].task_id] | max // empty' "$ckpt" 2>/dev/null || true)
 
     if [[ -n "$error_start" && "$error_start" != "null" ]]; then
-      # We found at least one errored task; restart from the earliest one
+      # We found errored tasks; restart from first error, stop at last error (don't redo successful tasks)
       START_INDEX="$error_start"
-      echo "Resuming: found errored tasks, restarting from first error task_id=$START_INDEX"
+      if [[ -n "$error_end" && "$error_end" != "null" ]]; then
+        END_INDEX=$((error_end + 1))  # end_index is exclusive in run.py
+        echo "Resuming: found errored tasks, restarting from task_id=$START_INDEX up to task_id=$error_end (inclusive)"
+      else
+        echo "Resuming: found errored tasks, restarting from task_id=$START_INDEX"
+      fi
     elif [[ -n "$max_id" && "$max_id" != "null" ]]; then
       # No errors; continue after last successful task
       START_INDEX=$((max_id + 1))
@@ -350,7 +357,7 @@ python run.py \
   --user-strategy llm \
   --temperature 0.6 \
   --start-index "$START_INDEX" \
-  --end-index -1 \
+  --end-index "${END_INDEX:--1}" \
   --max-concurrency 1 \
   --num-trials "$NUM_TRIALS_VAL" \
   --log-dir "$RESULTS_SUBDIR" \
