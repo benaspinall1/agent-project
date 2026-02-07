@@ -388,6 +388,39 @@ You should see a JSON response listing the specs of the user model.
 
 ---
 
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "Qwen/Qwen3-32B",
+      "object": "model",
+      "created": 1770442353,
+      "owned_by": "vllm",
+      "root": "Qwen/Qwen3-32B",
+      "parent": null,
+      "max_model_len": 40960,
+      "permission": [
+        {
+          "id": "modelperm-845d9dc64768b3a7",
+          "object": "model_permission",
+          "created": 1770442353,
+          "allow_create_engine": false,
+          "allow_sampling": true,
+          "allow_logprobs": true,
+          "allow_search_indices": false,
+          "allow_view": true,
+          "allow_fine_tuning": false,
+          "organization": "*",
+          "group": null,
+          "is_blocking": false
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## 5. Export User Model API Base
 
 Set the environment variable that Tau-Bench uses to locate the **user model** endpoint:
@@ -408,6 +441,9 @@ Run using a job array (This command does not assume that you start at 0 and end 
 
 ```bash
 sbatch --array=0-119 tau-experiment.sh
+```
+
+```bash
 
 Copy any line below to run that experiment (same order as the table above):
 
@@ -547,6 +583,7 @@ sbatch tau-experiment.sh retail fc Qwen/Qwen3-32B-Instruct-2507 5     # 119
 ---
 
 ### Resuming after job timeout
+
 The function below checks for an existing json file for the submitted job and gets starts the experiment for the next task in line.
 
 **Example directory structure:** home/'asurite'/agent-project/results/retail/react/4B/num_trials-1.json
@@ -563,20 +600,18 @@ set_start_index_from_checkpoint() {
       START_INDEX=$((max_id + 1))
       echo "Resuming: last task_id=$max_id, --start-index=$START_INDEX"
     fi
-  fi  
+  fi
 }
 
 set_start_index_from_checkpoint
 python run.py \
   ...
   --start-index "$START_INDEX" \
-  --end-index -1 \ # Last task 
+  --end-index -1 \ # Last task
   ...
 ```
 
 ### Other files edited to make this work: tau-bench/tau-bench/run.py
-
-
 
 ```python
 def run(config: RunConfig) -> List[EnvRunResult]:
@@ -587,8 +622,6 @@ def run(config: RunConfig) -> List[EnvRunResult]:
     )
     ...
 ```
-
-
 
 ---
 
