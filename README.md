@@ -445,8 +445,7 @@ sbatch --array=0-119 tau-experiment.sh
 
 ```bash
 
-Copy any line below to run that experiment (same order as the table above):
-
+# Copy any line below to run that experiment
 # Each command ends with its task id for job array submissions
 
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 1    # 0
