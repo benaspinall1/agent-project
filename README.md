@@ -574,6 +574,20 @@ python run.py \
   ...
 ```
 
+### Other files edited to make this work: tau-bench/tau-bench/run.py
+
+
+
+```python
+def run(config: RunConfig) -> List[EnvRunResult]:
+
+    ...
+    ckpt_path = (
+        f"{config.log_dir}/num_trials-{config.num_trials}.json"
+    )
+    ...
+```
+
 
 
 ---
