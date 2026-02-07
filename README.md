@@ -408,6 +408,9 @@ Run using a job array (This command does not assume that you start at 0 and end 
 
 ```bash
 sbatch --array=0-119 tau-experiment.sh
+```
+
+**Resuming after job timeout:** Each run writes to a stable checkpoint file (`results/.../checkpoint.json`). If a job is killed by the cluster (e.g. time limit), re-submit the **same** array task with the same arguments; it will load the checkpoint and only run the remaining (task_id, trial) pairs. No need to change any arguments.
 
 Copy any line below to run that experiment (same order as the table above):
 

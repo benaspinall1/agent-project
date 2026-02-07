@@ -288,7 +288,21 @@ cd "${ROOT_DIR}/tau-bench"
 echo "Running Tau-Bench..."
 echo
 
+# Usage: set START_INDEX for resume; call before the python run.
+set_start_index_from_checkpoint() {
+  local ckpt="${RUN_DIR}/num_trials-${NUM_TRIALS_VAL}.json"
+  START_INDEX=0
+  if [[ -f "$ckpt" ]]; then
+    local max_id
+    max_id=$(jq -r '[.[].task_id] | max // empty' "$ckpt" 2>/dev/null)
+    if [[ -n "$max_id" && "$max_id" != "null" ]]; then
+      START_INDEX=$((max_id + 1))
+      echo "Resuming: last task_id=$max_id, --start-index=$START_INDEX"
+    fi
+  fi  
+}
 
+set_start_index_from_checkpoint
 python run.py \
   --agent-strategy "$AGENT_STRAT_CLI" \
   --env "$ENV_NAME" \
@@ -298,6 +312,8 @@ python run.py \
   --user-model-provider openai \
   --user-strategy llm \
   --temperature 0.6 \
+  --start-index "$START_INDEX" \
+  --end-index -1 \
   --max-concurrency 1 \
   --num-trials "$NUM_TRIALS_VAL" \
   --log-dir "$RUN_DIR" \
