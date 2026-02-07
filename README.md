@@ -411,6 +411,8 @@ sbatch --array=0-119 tau-experiment.sh
 
 Copy any line below to run that experiment (same order as the table above):
 
+# Each command ends with its task id for job array submissions
+
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 1    # 0
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 2    # 1
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 3    # 2
@@ -535,13 +537,14 @@ sbatch tau-experiment.sh retail fc Qwen/Qwen3-32B-Instruct-2507 5     # 119
 
 ---
 
-### Option B: Single Experiment Run
+**Arguments (in order):**
 
-Run a single Tau-Bench experiment with explicit arguments:
+1. Environment (e.g., `retail`)
+2. Agent strategy (e.g., `react`)
+3. Assistant model ID
+4. **num_trials**
 
-```bash
-sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 1
-```
+---
 
 ### Resuming after job timeout
 The function below checks for an existing json file for the submitted job and gets starts the experiment for the next task in line.
@@ -571,13 +574,7 @@ python run.py \
   ...
 ```
 
-test
-**Arguments (in order):**
 
-1. Environment (e.g., `retail`)
-2. Agent strategy (e.g., `react`)
-3. Assistant model ID
-4. Trial index or run ID
 
 ---
 
