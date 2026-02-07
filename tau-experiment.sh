@@ -187,10 +187,8 @@ echo
 RESULTS_SUBDIR="${BASE_RESULTS_DIR}/${ENV_NAME}/${AGENT_STRAT_INPUT}/${MODEL_SIZE}"
 mkdir -p "${RESULTS_SUBDIR}"
 
-RUN_DIR="${RESULTS_SUBDIR}/${ASSIST_SAFE}_trials${NUM_TRIALS_VAL}"
-mkdir -p "$RUN_DIR"
 
-echo "Results directory:   $RUN_DIR"
+echo "Results directory:   $RESULTS_SUBDIR"
 echo
 
 #########################################
@@ -288,6 +286,41 @@ cd "${ROOT_DIR}/tau-bench"
 echo "Running Tau-Bench..."
 echo
 
+# Usage: set START_INDEX for resume; call before the python run.
+# Updated to:
+#   - If any .info.error exists -> resume from FIRST error task_id
+#   - Else -> resume from (max task_id + 1)
+set_start_index_from_checkpoint() {
+  local ckpt="${RESULTS_SUBDIR}/num_trials-${NUM_TRIALS_VAL}.json"
+  START_INDEX=0
+
+  if [[ -f "$ckpt" ]]; then
+    # first task_id with a non-empty .info.error, if any
+    local error_start
+    error_start=$(jq -r '[.[] | select(.info.error != null and .info.error != "") | .task_id] | min // empty' "$ckpt" 2>/dev/null || true)
+
+    # max task_id overall
+    local max_id
+    max_id=$(jq -r '[.[].task_id] | max // empty' "$ckpt" 2>/dev/null || true)
+
+    if [[ -n "$error_start" && "$error_start" != "null" ]]; then
+      # We found at least one errored task; restart from the earliest one
+      START_INDEX="$error_start"
+      echo "Resuming: found errored tasks, restarting from first error task_id=$START_INDEX"
+    elif [[ -n "$max_id" && "$max_id" != "null" ]]; then
+      # No errors; continue after last successful task
+      START_INDEX=$((max_id + 1))
+      echo "Resuming: last completed task_id=$max_id, --start-index=$START_INDEX"
+    else
+      echo "Checkpoint exists but could not determine task_ids; starting from 0."
+      START_INDEX=0
+    fi
+  else
+    echo "No checkpoint file at $ckpt; starting from first task (start-index=0)."
+  fi
+}
+
+set_start_index_from_checkpoint
 
 python run.py \
   --agent-strategy "$AGENT_STRAT_CLI" \
@@ -298,12 +331,13 @@ python run.py \
   --user-model-provider openai \
   --user-strategy llm \
   --temperature 0.6 \
+  --start-index "$START_INDEX" \
+  --end-index -1 \
   --max-concurrency 1 \
   --num-trials "$NUM_TRIALS_VAL" \
-  --log-dir "$RUN_DIR" \
+  --log-dir "$RESULTS_SUBDIR" \
 
 TB_EXIT=$?
-
 
 #########################################
 # CLEANUP

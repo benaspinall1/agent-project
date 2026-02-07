@@ -29,10 +29,7 @@ def run(config: RunConfig) -> List[EnvRunResult]:
     time_str = datetime.now().strftime("%m%d%H%M%S")
 
     ckpt_path = (
-        f"{config.log_dir}/"
-        f"{config.agent_strategy}-{config.model.split('/')[-1]}-{config.temperature}"
-        f"_range_{config.start_index}-{config.end_index}"
-        f"_user-{config.user_model}-{config.user_strategy}_{time_str}.json"
+        f"{config.log_dir}/num_trials-{config.num_trials}.json"
     )
 
     # Ensure the log directory and the checkpoint directory both exist.

@@ -130,14 +130,8 @@ Submit the Slurm job that launches the **user model** vLLM server:
 sbatch user-vllm-job.sh
 ```
 
-After submission, monitor the logs to confirm the server is running:
-
-```bash
-tail -n 20 logs/user_vllm_<jobid>.out
-```
-
-You should see some output that looks like the snippet below. If not, go into the **logs** directory and
-scroll to the top of the file with this filename structure: "user_vllm_jobid.out"
+After submission, go into the **logs** directory and
+scroll to the top of the file with this filename structure: "user_vllm_jobid.out". You should see the following output:
 
 ```
 ====================================
@@ -148,17 +142,48 @@ User server base: http://gaudi001:8007/v1
 ...
 ```
 
-Once running, verify that the OpenAI-compatible API endpoint is live:
+Verify that the user model is live at the gaudi endpoint:
 
 ```bash
 curl -s http://gaudi001:8007/v1/models | jq
 ```
 
-> ⚠️ IMPORTANT: Dont just copy and paste this command withouth making sure it matches the **User server base** from the **user_vllm_jobid.out**
+> ⚠️ IMPORTANT: If you copy and paste this command make sure the port number matches the **User server base** from the **user_vllm_jobid.out** file
 
 You should see a JSON response listing the specs of the user model.
 
----
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "Qwen/Qwen3-32B",
+      "object": "model",
+      "created": 1770442353,
+      "owned_by": "vllm",
+      "root": "Qwen/Qwen3-32B",
+      "parent": null,
+      "max_model_len": 40960,
+      "permission": [
+        {
+          "id": "modelperm-845d9dc64768b3a7",
+          "object": "model_permission",
+          "created": 1770442353,
+          "allow_create_engine": false,
+          "allow_sampling": true,
+          "allow_logprobs": true,
+          "allow_search_indices": false,
+          "allow_view": true,
+          "allow_fine_tuning": false,
+          "organization": "*",
+          "group": null,
+          "is_blocking": false
+        }
+      ]
+    }
+  ]
+}
+```
 
 ## 5. Export User Model API Base
 
@@ -167,8 +192,6 @@ Set the environment variable that Tau-Bench uses to locate the **user model** en
 ```bash
 export USER_MODEL_API_BASE="http://gaudi001:8007/v1"
 ```
-
-This must be exported **before** launching Tau-Bench experiments.
 
 ---
 
@@ -180,8 +203,12 @@ Run using a job array (This command does not assume that you start at 0 and end 
 
 ```bash
 sbatch --array=0-119 tau-experiment.sh
+```
 
-Copy any line below to run that experiment (same order as the table above):
+```bash
+
+# Copy any line below to run that experiment
+# Each command ends with its task id for job array submissions
 
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 1    # 0 ben
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 2    # 1 ben
@@ -307,21 +334,55 @@ sbatch tau-experiment.sh retail fc Qwen/Qwen3-32B-Instruct-2507 5     # 119
 
 ---
 
-### Option B: Single Experiment Run
-
-Run a single Tau-Bench experiment with explicit arguments:
-
-```bash
-sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 1
-```
-
-test
 **Arguments (in order):**
 
 1. Environment (e.g., `retail`)
 2. Agent strategy (e.g., `react`)
 3. Assistant model ID
-4. Trial index or run ID
+4. **num_trials**
+
+---
+
+### Resuming after job timeout
+
+The function below checks for an existing json file for the submitted job and gets starts the experiment for the next task in line.
+
+**Example directory structure:** home/'asurite'/agent-project/results/retail/react/4B/num_trials-1.json
+
+```bash
+# Usage: set START_INDEX for resume; call before the python run.
+set_start_index_from_checkpoint() {
+  local ckpt="${RUN_DIR}/num_trials-${NUM_TRIALS_VAL}.json"
+  START_INDEX=0
+  if [[ -f "$ckpt" ]]; then
+    local max_id
+    max_id=$(jq -r '[.[].task_id] | max // empty' "$ckpt" 2>/dev/null)
+    if [[ -n "$max_id" && "$max_id" != "null" ]]; then
+      START_INDEX=$((max_id + 1))
+      echo "Resuming: last task_id=$max_id, --start-index=$START_INDEX"
+    fi
+  fi
+}
+
+set_start_index_from_checkpoint
+python run.py \
+  ...
+  --start-index "$START_INDEX" \
+  --end-index -1 \ # Last task
+  ...
+```
+
+### Other files edited to make this work: tau-bench/tau-bench/run.py
+
+```python
+def run(config: RunConfig) -> List[EnvRunResult]:
+
+    ...
+    ckpt_path = (
+        f"{config.log_dir}/num_trials-{config.num_trials}.json"
+    )
+    ...
+```
 
 ---
 
