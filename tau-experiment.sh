@@ -6,7 +6,7 @@
 #SBATCH --gres=gpu:hl225:1
 #SBATCH -c 12
 #SBATCH --mem=40G
-#SBATCH -t 4:00:00
+#SBATCH -t 6:00:00
 #SBATCH -o logs/%x_%A_%a.out
 #SBATCH -e errors/%x_%A_%a.err
 
