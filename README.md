@@ -548,6 +548,7 @@ Run a single Tau-Bench experiment with explicit arguments:
 sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 1
 ```
 
+test
 **Arguments (in order):**
 
 1. Environment (e.g., `retail`)
