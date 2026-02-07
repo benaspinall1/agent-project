@@ -194,7 +194,7 @@ def display_metrics(results: List[EnvRunResult]) -> None:
 
     num_trials = len(set([r.trial for r in results]))
     rewards = [r.reward for r in results]
-    avg_reward = sum(rewards) / len(rewards)
+    avg_reward = sum(rewards) / len(rewards) if len(rewards) > 0 else 0
     # c from https://arxiv.org/pdf/2406.12045
     c_per_task_id: dict[int, int] = {}
     for result in results:
