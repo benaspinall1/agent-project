@@ -408,9 +408,6 @@ Run using a job array (This command does not assume that you start at 0 and end 
 
 ```bash
 sbatch --array=0-119 tau-experiment.sh
-```
-
-**Resuming after job timeout:** Each run writes to a stable checkpoint file (`results/.../checkpoint.json`). If a job is killed by the cluster (e.g. time limit), re-submit the **same** array task with the same arguments; it will load the checkpoint and only run the remaining (task_id, trial) pairs. No need to change any arguments.
 
 Copy any line below to run that experiment (same order as the table above):
 
@@ -544,6 +541,34 @@ Run a single Tau-Bench experiment with explicit arguments:
 
 ```bash
 sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 1
+```
+
+### Resuming after job timeout
+The function below checks for an existing json file for the submitted job and gets starts the experiment for the next task in line.
+
+**Example directory structure:** home/'asurite'/agent-project/results/retail/react/4B/num_trials-1.json
+
+```bash
+# Usage: set START_INDEX for resume; call before the python run.
+set_start_index_from_checkpoint() {
+  local ckpt="${RUN_DIR}/num_trials-${NUM_TRIALS_VAL}.json"
+  START_INDEX=0
+  if [[ -f "$ckpt" ]]; then
+    local max_id
+    max_id=$(jq -r '[.[].task_id] | max // empty' "$ckpt" 2>/dev/null)
+    if [[ -n "$max_id" && "$max_id" != "null" ]]; then
+      START_INDEX=$((max_id + 1))
+      echo "Resuming: last task_id=$max_id, --start-index=$START_INDEX"
+    fi
+  fi  
+}
+
+set_start_index_from_checkpoint
+python run.py \
+  ...
+  --start-index "$START_INDEX" \
+  --end-index -1 \ # Last task 
+  ...
 ```
 
 test
