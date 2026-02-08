@@ -225,8 +225,8 @@ echo
 #########################################
 
 echo "Starting ASSISTANT vLLM on port 8005 (node: $(hostname))..."
-ASSIST_LOG="${LOG_SUBDIR}/assistant_${ASSIST_SAFE}_trials${NUM_TRIALS_VAL}_job${SLURM_JOB_ID}.log"
-./assistant-server.sh "$ASSIST_MODEL" 8005 \
+ASSIST_LOG="${LOG_SUBDIR}/assistant-num_trials${NUM_TRIALS_VAL}-job${SLURM_JOB_ID}.log"
+./assistant-server.sh "$ASSIST_MODEL" 8005 "$AGENT_STRAT_CLI" \
   > "${ASSIST_LOG}" 2>&1 &
 ASSIST_PID=$!
 
