@@ -79,23 +79,8 @@ This separation keeps experiments reproducible and prevents model server issues 
 
 ---
 
-This document describes the **end-to-end command sequence** required to run a Tau-Bench experiment on the cluster. It is intended to help teammates quickly understand the setup, dependencies, and execution order.
 
-
-## 1. Project Directory & Script Permissions
-
-First, move into the project directory and ensure all relevant scripts are executable:
-
-```bash
-cd ~/agent-project
-chmod +x assistant-server.sh user-server.sh tau-experiment.sh user-vllm-job.sh
-```
-
-This guarantees that the Slurm job scripts and server startup scripts can be executed without permission errors.
-
----
-
-## 2. Load Environment & Activate Conda/Mamba Env
+## 1. Load Environment & Activate Conda/Mamba Env
 
 Load the cluster-provided mamba module and activate the environment that contains PyTorch + vLLM support:
 
@@ -108,21 +93,20 @@ source activate gaudi-pytorch-vllm
 
 ---
 
-## 3. Python Dependency Fixes
+## 2. Python Dependency Fixes
 
-Some Tau-Bench and LiteLLM dependencies need to be explicitly installed at the user level (This really only needs to be done once):
+Some Tau-Bench and LiteLLM dependencies need to be explicitly installed at the user level:
 
 ```bash
 pip install --user "litellm==1.41.0"
 pip install --user "typing_extensions>=4.10.0"
 pip install --user "tokenizers>=0.21,<0.22"
 ```
-
-These versions are known to be compatible with the current Tau-Bench setup and OpenAI-compatible vLLM servers.
+> ⚠️ You only need to run this once.
 
 ---
 
-## 4. Start the User vLLM Server
+## 3. Start the User vLLM Server
 
 Submit the Slurm job that launches the **user model** vLLM server:
 
@@ -185,17 +169,18 @@ You should see a JSON response listing the specs of the user model.
 }
 ```
 
-## 5. Export User Model API Base
+## 4. Export User Model API Base
 
 Set the environment variable that Tau-Bench uses to locate the **user model** endpoint:
 
 ```bash
 export USER_MODEL_API_BASE="http://gaudi001:8007/v1"
 ```
+> ⚠️ IMPORTANT: Again, if you copy and paste this command make sure the port number matches the **User server base** from the **user_vllm_jobid.out** file
 
 ---
 
-## 6. Launch Tau-Bench Experiments
+## 5. Launch Tau-Bench Experiments
 
 ### Option A: Slurm Job Array (Recommended for Sweeps)
 
@@ -270,11 +255,11 @@ sbatch tau-experiment.sh airline fc Qwen/Qwen3-32B-Instruct-2507 2    # 56
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-32B-Instruct-2507 3    # 57
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-32B-Instruct-2507 4    # 58
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-32B-Instruct-2507 5    # 59
-sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 1     # 60 ben
-sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 2     # 61 ben
-sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 3     # 62 ben
-sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 4     # 63 ben
-sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 5     # 64 ben
+sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 1     # 60 ben (Running)
+sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 2     # 61 ben (Running)
+sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 3     # 62 ben (Running)
+sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 4     # 63 ben (Running)
+sbatch tau-experiment.sh retail act Qwen/Qwen3-4B-Instruct-2507 5     # 64 ben (Running)
 sbatch tau-experiment.sh retail act Qwen/Qwen3-8B-Instruct-2507 1     # 65
 sbatch tau-experiment.sh retail act Qwen/Qwen3-8B-Instruct-2507 2     # 66
 sbatch tau-experiment.sh retail act Qwen/Qwen3-8B-Instruct-2507 3     # 67
@@ -290,11 +275,11 @@ sbatch tau-experiment.sh retail act Qwen/Qwen3-32B-Instruct-2507 2    # 76
 sbatch tau-experiment.sh retail act Qwen/Qwen3-32B-Instruct-2507 3    # 77
 sbatch tau-experiment.sh retail act Qwen/Qwen3-32B-Instruct-2507 4    # 78
 sbatch tau-experiment.sh retail act Qwen/Qwen3-32B-Instruct-2507 5    # 79
-sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 1   # 80 ben
-sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 2   # 81 ben
-sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 3   # 82 ben
-sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 4   # 83 ben
-sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 5   # 84 ben
+sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 1   # 80 ben (Running)
+sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 2   # 81 ben (Running)
+sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 3   # 82 ben (Running)
+sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 4   # 83 ben (Running)
+sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 5   # 84 ben (Running)
 sbatch tau-experiment.sh retail react Qwen/Qwen3-8B-Instruct-2507 1   # 85
 sbatch tau-experiment.sh retail react Qwen/Qwen3-8B-Instruct-2507 2   # 86
 sbatch tau-experiment.sh retail react Qwen/Qwen3-8B-Instruct-2507 3   # 87
@@ -310,11 +295,11 @@ sbatch tau-experiment.sh retail react Qwen/Qwen3-32B-Instruct-2507 2  # 96
 sbatch tau-experiment.sh retail react Qwen/Qwen3-32B-Instruct-2507 3  # 97
 sbatch tau-experiment.sh retail react Qwen/Qwen3-32B-Instruct-2507 4  # 98
 sbatch tau-experiment.sh retail react Qwen/Qwen3-32B-Instruct-2507 5  # 99
-sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 1      # 100 ben
-sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 2      # 101 ben
-sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 3      # 102 ben
-sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 4      # 103 ben
-sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 5      # 104 ben
+sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 1      # 100 ben (Running)
+sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 2      # 101 ben (Running)
+sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 3      # 102 ben (Running)
+sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 4      # 103 ben (Running)
+sbatch tau-experiment.sh retail fc Qwen/Qwen3-4B-Instruct-2507 5      # 104 ben (Running)
 sbatch tau-experiment.sh retail fc Qwen/Qwen3-8B-Instruct-2507 1      # 105
 sbatch tau-experiment.sh retail fc Qwen/Qwen3-8B-Instruct-2507 2      # 106
 sbatch tau-experiment.sh retail fc Qwen/Qwen3-8B-Instruct-2507 3      # 107
@@ -339,7 +324,7 @@ sbatch tau-experiment.sh retail fc Qwen/Qwen3-32B-Instruct-2507 5     # 119
 1. Environment (e.g., `retail`)
 2. Agent strategy (e.g., `react`)
 3. Assistant model ID
-4. **num_trials**
+4. `num_trials`
 
 ---
 
@@ -386,7 +371,7 @@ def run(config: RunConfig) -> List[EnvRunResult]:
 
 ---
 
-## 7. Summary Flow
+### Summary Flow
 
 **High-level order of operations:**
 
