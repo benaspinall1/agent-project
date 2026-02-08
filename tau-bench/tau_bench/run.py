@@ -124,10 +124,22 @@ def run(config: RunConfig) -> List[EnvRunResult]:
 
     display_metrics(results)
 
-    # Final write of all results
+    # Final write: merge with existing checkpoint so partial re-runs (e.g. error resume)
+    # do not wipe out results for tasks outside this run's range.
     os.makedirs(os.path.dirname(ckpt_path), exist_ok=True)
+    run_task_ids = {r.task_id for r in results}
+
+    existing: List[Dict[str, Any]] = []
+    if os.path.exists(ckpt_path):
+        with open(ckpt_path, "r") as f:
+            existing = json.load(f)
+    # Keep existing entries whose task_id is not in the range we just ran
+    merged = [e for e in existing if e.get("task_id") not in run_task_ids]
+    # Add all results from this run (replacing any prior entries for those task_ids)
+    merged.extend(result.model_dump() for result in results)
+    merged.sort(key=lambda e: (e.get("task_id", 0), e.get("trial", 0)))
     with open(ckpt_path, "w") as f:
-        json.dump([result.model_dump() for result in results], f, indent=2)
+        json.dump(merged, f, indent=2)
         print(f"\n📄 Results saved to {ckpt_path}\n")
     return results
 
