@@ -235,7 +235,7 @@ sbatch tau-experiment.sh airline react Qwen/Qwen3-32B-Instruct-2507 2 # 36
 sbatch tau-experiment.sh airline react Qwen/Qwen3-32B-Instruct-2507 3 # 37
 sbatch tau-experiment.sh airline react Qwen/Qwen3-32B-Instruct-2507 4 # 38
 sbatch tau-experiment.sh airline react Qwen/Qwen3-32B-Instruct-2507 5 # 39
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 1     # 40 ben (Done✅)
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 1     # 40 ben (In progress)
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 2     # 41 ben (In progress)
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 3     # 42 ben (In progress)
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 4     # 43 ben (In progress)
@@ -275,7 +275,7 @@ sbatch tau-experiment.sh retail act Qwen/Qwen3-32B-Instruct-2507 2    # 76
 sbatch tau-experiment.sh retail act Qwen/Qwen3-32B-Instruct-2507 3    # 77
 sbatch tau-experiment.sh retail act Qwen/Qwen3-32B-Instruct-2507 4    # 78
 sbatch tau-experiment.sh retail act Qwen/Qwen3-32B-Instruct-2507 5    # 79
-sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 1   # 80 ben (Done✅)
+sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 1   # 80 ben (In progress)
 sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 2   # 81 ben (In progress)
 sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 3   # 82 ben (In progress)
 sbatch tau-experiment.sh retail react Qwen/Qwen3-4B-Instruct-2507 4   # 83 ben (In progress)
