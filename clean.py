@@ -112,7 +112,7 @@ def run_on_all_files(function):
                 for trial in trials:
                     file = f"{base_path}/{env}/{agent}/{model}/num_trials-{trial}.json"
                     function(file)
-                    
+
                     
 def run_on_all_files_in_folder(folder_path, function):
     for file in os.listdir(folder_path):
@@ -170,9 +170,6 @@ if __name__ == "__main__":
     # run_on_all_files_in_folder(folder_path, sort_by_task_id)
     # print(f"Removing error logs from {folder_path}    --------------------------")
     # run_on_all_files_in_folder(folder_path, remove_error_logs)
-    # print(f"Printing task trials in {folder_path}      -------------------------")
-    # run_on_all_files_in_folder(folder_path, lambda x: print_task_trials(x, group_by_task=True))
-    # print(f"Printing missing task ids in {folder_path} -------------------------")
-    # run_on_all_files_in_folder(folder_path, missing_task_ids)
+
     
     

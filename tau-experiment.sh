@@ -316,15 +316,6 @@ set_start_index_from_checkpoint() {
       else
         echo "Resuming: found errored tasks, restarting from task_id=$START_INDEX"
       fi
-    elif [[ -n "$max_id" && "$max_id" != "null" ]]; then
-      # No errors; continue after last successful task
-      START_INDEX=$((max_id + 1))
-      echo "Resuming: last completed task_id=$max_id, --start-index=$START_INDEX"
-      # All tasks done (zero-indexed last task_id = TOTAL_TASKS - 1)? Skip run to avoid starting over.
-      if [[ "$START_INDEX" -ge "$TOTAL_TASKS" ]]; then
-        SKIP_RUN=1
-        echo "All tasks already completed (last task_id=$max_id, total_tasks=$TOTAL_TASKS). Skipping run."
-      fi
     else
       echo "Checkpoint exists but could not determine task_ids; starting from 0."
       START_INDEX=0

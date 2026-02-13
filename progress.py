@@ -140,7 +140,7 @@ def progress_by_model(model):
     print(f"Qwen{model} completion: {completion:.2f}%")
 
 
-def detailed_progress(folder_path)
+def detailed_progress(folder_path):
     print(f"Printing task trials in {folder_path}      -------------------------")
     run_on_all_files_in_folder(folder_path, lambda x: print_task_trials(x, group_by_task=True))
     print(f"Printing missing task ids in {folder_path} -------------------------")
@@ -149,7 +149,10 @@ def detailed_progress(folder_path)
 
 if __name__ == "__main__":
   
-  folder_path = "results/retail/react/4B"
+  model_size = "4B" # 4B, 8B, 14B, 32B
+  env = "retail" # retail, airline
+  strategy = "act" # act, react, fc
+  folder_path = f"results/{env}/{strategy}/{model_size}"
   
-  experiment_completion_by_model("4B")
+  progress_by_model(model_size)
   detailed_progress(folder_path) # more fined grained view of progress
