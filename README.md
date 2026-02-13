@@ -200,11 +200,11 @@ sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 2    # 1 ben (I
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 3    # 2 ben (In progress)
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 4    # 3 ben (In progress)
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 5    # 4 ben (In progress)
-sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 1    # 5
-sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 2    # 6
-sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 3    # 7
-sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 4    # 8
-sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 5    # 9
+sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 1    # 5 nishant (In progress)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 2    # 6 nishant (In progress)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 3    # 7 nishant (In progress)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 4    # 8 nishant (In progress)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-8B-Instruct-2507 5    # 9 nishant (In progress)
 sbatch tau-experiment.sh airline act Qwen/Qwen3-14B-Instruct-2507 1   # 10
 sbatch tau-experiment.sh airline act Qwen/Qwen3-14B-Instruct-2507 2   # 11
 sbatch tau-experiment.sh airline act Qwen/Qwen3-14B-Instruct-2507 3   # 12
@@ -240,11 +240,11 @@ sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 2     # 41 ben (
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 3     # 42 ben (In progress)
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 4     # 43 ben (In progress)
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-4B-Instruct-2507 5     # 44 ben (In progress)
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 1     # 45
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 2     # 46
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 3     # 47
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 4     # 48
-sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 5     # 49
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 1     # 45 nishant (In progress)
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 2     # 46 nishant (In progress) 
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 3     # 47 nishant (In progress)
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 4     # 48 nishant (In progress)
+sbatch tau-experiment.sh airline fc Qwen/Qwen3-8B-Instruct-2507 5     # 49 nishant (In progress)
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-14B-Instruct-2507 1    # 50
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-14B-Instruct-2507 2    # 51
 sbatch tau-experiment.sh airline fc Qwen/Qwen3-14B-Instruct-2507 3    # 52
