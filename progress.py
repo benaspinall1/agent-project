@@ -102,15 +102,9 @@ def count_completed_tasks_in_folder(folder_path, total_tasks):
     and print the percentage completion for each file.
     """
     print(f"Counting completed tasks in {folder_path}")
-    import json
-    import os
-    files = [f for f in os.listdir(folder_path) if f.endswith(".json")]
-    if not files:
-        print("No .json files found in the directory.")
-        return
-    
 
-    for i, file in enumerate(files):
+    for i in range(0, 5):
+        file = f"num_trials-{i + 1}.json"
         file_path = os.path.join(folder_path, file)
         with open(file_path, "r") as f:
             try:

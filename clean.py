@@ -218,8 +218,8 @@ def task_differences(folder_path, file_name):
 if __name__ == "__main__":
     
     model_size = "4B" # 4B, 8B, 14B, 32B
-    env = "retail" # retail, airline
-    strategy = "act" # act, react, fc
+    env = "airline" # retail, airline
+    strategy = "react" # act, react, fc
     folder_path = f"results/{env}/{strategy}/{model_size}"
 
     
@@ -229,8 +229,8 @@ if __name__ == "__main__":
     print(f"Removing error logs from {folder_path}    --------------------------")
     run_on_all_files_in_folder(folder_path, remove_error_logs)
 
-    for i in range(1, 6):
-        task_differences(folder_path, f"num_trials-{i}.json")
+    # for i in range(1, 6):
+    #     task_differences(folder_path, f"num_trials-{i}.json")
 
     
     
