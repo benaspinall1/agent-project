@@ -245,8 +245,50 @@ def task_differences(folder_path, file_name):
 
 
 
+def count_completed_tasks_in_folder(folder_path, total_tasks):
+    """
+    Count how many completed tasks there are in all .json files in a directory,
+    and print the percentage completion for each file.
+    """
+    print(f"Counting completed tasks in {folder_path}")
+    import json
+    import os
+    files = [f for f in os.listdir(folder_path) if f.endswith(".json")]
+    if not files:
+        print("No .json files found in the directory.")
+        return
 
-            
+    for file in files:
+        file_path = os.path.join(folder_path, file)
+        with open(file_path, "r") as f:
+            try:
+                data = json.load(f)
+            except Exception as e:
+                print(f"Could not load {file}: {e}")
+                continue
+
+        completed_tasks = [item for item in data if not item.get("info", {}).get("error")]
+        num_completed = len(completed_tasks)
+
+        percent_complete = 100.0 * num_completed / total_tasks
+        print(f"{file}: {num_completed}/{total_tasks} tasks completed ({percent_complete:.2f}%)")
+    print()
+    return num_completed
+
+
+def experiment_completion_by_model(model):
+    total_retail_tasks_per_strategy = 575 # 115 * 5 (5 trials per task)
+    total_airline_tasks_per_strategy = 250 # 50 * 5 (5 trials per task)
+    completion = count_completed_tasks_in_folder(f"ben/retail/react/{model}", total_retail_tasks_per_strategy)
+    completion += count_completed_tasks_in_folder(f"ben/retail/fc/{model}", total_retail_tasks_per_strategy)
+    completion += count_completed_tasks_in_folder(f"ben/retail/act/{model}", total_retail_tasks_per_strategy)
+    
+    completion += count_completed_tasks_in_folder(f"ben/airline/react/{model}", total_airline_tasks_per_strategy)
+    completion += count_completed_tasks_in_folder(f"ben/airline/fc/{model}", total_airline_tasks_per_strategy)
+    completion += count_completed_tasks_in_folder(f"ben/airline/act/{model}", total_airline_tasks_per_strategy)
+    completion = completion / ((total_retail_tasks_per_strategy * 3) + (total_airline_tasks_per_strategy * 3)) * 100 # 3 strategies (act, react, fc)
+    print(f"Qwen{model} completion: {completion:.2f}%")
+                
 
 
 if __name__ == "__main__":
@@ -256,11 +298,14 @@ if __name__ == "__main__":
     #     task_differences(folder_path, f"num_trials-{i}.json")
     
     
-    print(f"Sorting files in {folder_path}            --------------------------")
-    run_on_all_files_in_folder(folder_path, sort_by_task_id)
-    print(f"Removing error logs from {folder_path}    --------------------------")
-    run_on_all_files_in_folder(folder_path, remove_error_logs)
-    print(f"Printing task trials in {folder_path}      -------------------------")
-    run_on_all_files_in_folder(folder_path, lambda x: print_task_trials(x, group_by_task=True))
-    print(f"Printing missing task ids in {folder_path} -------------------------")
-    run_on_all_files_in_folder(folder_path, missing_task_ids)
+    # print(f"Sorting files in {folder_path}            --------------------------")
+    # run_on_all_files_in_folder(folder_path, sort_by_task_id)
+    # print(f"Removing error logs from {folder_path}    --------------------------")
+    # run_on_all_files_in_folder(folder_path, remove_error_logs)
+    # print(f"Printing task trials in {folder_path}      -------------------------")
+    # run_on_all_files_in_folder(folder_path, lambda x: print_task_trials(x, group_by_task=True))
+    # print(f"Printing missing task ids in {folder_path} -------------------------")
+    # run_on_all_files_in_folder(folder_path, missing_task_ids)
+    
+    experiment_completion_by_model("4B")
+    
