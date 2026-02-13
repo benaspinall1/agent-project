@@ -171,10 +171,18 @@ def print_task_trials(file_path, group_by_task=False):
                 
                 
 def task_differences(folder_path, file_name):
-    local_file_path = f"{folder_path}local/{file_name}"
-    main_file_path = f"{folder_path}{file_name}"
+    local_file_path = os.path.join(folder_path, "local", file_name)
+    main_file_path = os.path.join(folder_path, file_name)
     local_task_to_trials = print_task_trials(local_file_path, group_by_task=True)
     main_task_to_trials = print_task_trials(main_file_path, group_by_task=True)
+
+    # If either file failed to load, skip processing to avoid NoneType iteration
+    if not isinstance(local_task_to_trials, dict) or not isinstance(main_task_to_trials, dict):
+        print(f"Skipping differences: missing or unreadable files:")
+        print(f"  local: {local_file_path}")
+        print(f"  main:  {main_file_path}")
+        return
+
     old_to_new = []
     for task_id in local_task_to_trials:
         if task_id not in main_task_to_trials:
@@ -210,8 +218,8 @@ def task_differences(folder_path, file_name):
 if __name__ == "__main__":
     
     model_size = "4B" # 4B, 8B, 14B, 32B
-    env = "airline" # retail, airline
-    strategy = "fc" # act, react, fc
+    env = "retail" # retail, airline
+    strategy = "act" # act, react, fc
     folder_path = f"results/{env}/{strategy}/{model_size}"
 
     
@@ -221,8 +229,8 @@ if __name__ == "__main__":
     print(f"Removing error logs from {folder_path}    --------------------------")
     run_on_all_files_in_folder(folder_path, remove_error_logs)
 
-    # for i in range(1, 6):
-    #     task_differences(folder_path, f"num_trials-{i}.json")
+    for i in range(1, 6):
+        task_differences(folder_path, f"num_trials-{i}.json")
 
     
     

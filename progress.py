@@ -75,12 +75,12 @@ def missing_task_ids(file_path: str):
     missing = [i for i in range(total_tasks) if i not in completed]
     if len(missing) == 0:
         print(f"\n{file_path}")
-        print(f"  All tasks completed")
+        print(f"  All tasks have at least one trial completed. Check task_id to trial mapping above to see if any trials are missing.")
         return None
     completed_count = len(completed)
     missing_str = ", ".join(map(str, missing))
     print(f"\n{file_path}")
-    print(f"  {completed_count}/{total_tasks} completed | missing: {len(missing)} | {missing_str}")
+    print(f"  {completed_count}/{total_tasks} completed | missing count: {len(missing)} | break down: {missing_str}")
     # print(f"  missing: {missing_str}")
 
     # Compute sbatch job index (from README mapping) and print the exact command to run
@@ -108,8 +108,9 @@ def count_completed_tasks_in_folder(folder_path, total_tasks):
     if not files:
         print("No .json files found in the directory.")
         return
+    
 
-    for file in files:
+    for i, file in enumerate(files):
         file_path = os.path.join(folder_path, file)
         with open(file_path, "r") as f:
             try:
@@ -120,23 +121,31 @@ def count_completed_tasks_in_folder(folder_path, total_tasks):
 
         completed_tasks = [item for item in data if not item.get("info", {}).get("error")]
         num_completed = len(completed_tasks)
-
-        percent_complete = 100.0 * num_completed / total_tasks
-        print(f"{file}: {num_completed}/{total_tasks} tasks completed ({percent_complete:.2f}%)")
+        
+        percent_complete = 100.0 * num_completed / (total_tasks * (i + 1))
+        print(f"{file}: {num_completed}/{(total_tasks * (i + 1))} tasks completed ({percent_complete:.2f}%)")
     print()
     return num_completed
 
 def progress_by_model(model):
-    total_retail_tasks_per_strategy = 575 # 115 * 5 (5 trials per task)
-    total_airline_tasks_per_strategy = 250 # 50 * 5 (5 trials per task)
-    completion = count_completed_tasks_in_folder(f"results/retail/react/{model}", total_retail_tasks_per_strategy)
-    completion += count_completed_tasks_in_folder(f"results/retail/fc/{model}", total_retail_tasks_per_strategy)
-    completion += count_completed_tasks_in_folder(f"results/retail/act/{model}", total_retail_tasks_per_strategy)
+    trials = [1, 2, 3, 4, 5]
+
+    retail_tasks = 115 
+    airline_tasks = 50 
+    total_retail_tasks = 0
+    total_airline_tasks = 0
+    for trial in trials:
+        total_retail_tasks += retail_tasks * trial
+        total_airline_tasks += airline_tasks * trial
+    total_tasks = total_retail_tasks + total_airline_tasks
+    completion = count_completed_tasks_in_folder(f"results/retail/react/{model}", retail_tasks)
+    completion += count_completed_tasks_in_folder(f"results/retail/fc/{model}", retail_tasks)
+    completion += count_completed_tasks_in_folder(f"results/retail/act/{model}", retail_tasks)
     
-    completion += count_completed_tasks_in_folder(f"results/airline/react/{model}", total_airline_tasks_per_strategy)
-    completion += count_completed_tasks_in_folder(f"results/airline/fc/{model}", total_airline_tasks_per_strategy)
-    completion += count_completed_tasks_in_folder(f"results/airline/act/{model}", total_airline_tasks_per_strategy)
-    completion = completion / ((total_retail_tasks_per_strategy * 3) + (total_airline_tasks_per_strategy * 3)) * 100 # 3 strategies (act, react, fc)
+    completion += count_completed_tasks_in_folder(f"results/airline/react/{model}", airline_tasks)
+    completion += count_completed_tasks_in_folder(f"results/airline/fc/{model}", airline_tasks)
+    completion += count_completed_tasks_in_folder(f"results/airline/act/{model}", airline_tasks)
+    completion = completion / total_tasks * 100 # 3 strategies (act, react, fc)
     print(f"Qwen{model} completion: {completion:.2f}%")
 
 
@@ -150,9 +159,9 @@ def detailed_progress(folder_path):
 if __name__ == "__main__":
   
   model_size = "4B" # 4B, 8B, 14B, 32B
-  env = "airline" # retail, airline
-  strategy = "fc" # act, react, fc
+  env = "retail" # retail, airline
+  strategy = "act" # act, react, fc
   folder_path = f"results/{env}/{strategy}/{model_size}"
   
-#   progress_by_model(model_size)
-  detailed_progress(folder_path) # more fined grained view of progress
+  progress_by_model(model_size)
+#   detailed_progress(folder_path) # more fined grained view of progress
