@@ -122,6 +122,54 @@ def run_on_all_files_in_folder(folder_path, function):
                 print(result)
                 
                 
+def print_task_trials(file_path, group_by_task=False):
+    """
+    For the given file path, print each (task_id, trial) observed in the data.
+    If no 'trial' field is present for a task, prints 'None' as its trial.
+
+    If group_by_task is True, prints a hash-map style summary:
+        task_id -> [sorted unique list of trials observed]
+    """
+    import json
+    try:
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"Error reading {file_path}: {e}")
+        return
+
+    if not group_by_task:
+        print(f"\nTask IDs and trial numbers in {file_path}:")
+        for item in data:
+            task_id = item.get("task_id")
+            trial_num = item.get("trial", None)
+            print(f"  task_id: {task_id}, trial: {trial_num}")
+        return
+
+    # Group/hash-map style: task_id -> list of trials
+    task_to_trials = {}
+    for item in data:
+        task_id = item.get("task_id")
+        trial_num = item.get("trial", None)
+        if task_id is None:
+            continue
+        if task_id not in task_to_trials:
+            task_to_trials[task_id] = []
+        task_to_trials[task_id].append(trial_num)
+
+    print(f"\nTask IDs mapped to trials in {file_path}:")
+    for task_id in sorted(task_to_trials.keys()):
+        observed = task_to_trials[task_id]
+        has_none = any(t is None for t in observed)
+        uniques = sorted({t for t in observed if t is not None})
+        if has_none:
+            trials_list = [None] + uniques
+        else:
+            trials_list = uniques
+        print(f"  {task_id}: {trials_list}")
+    return task_to_trials
+                
+                
 def task_differences(folder_path, file_name):
     local_file_path = f"{folder_path}local/{file_name}"
     main_file_path = f"{folder_path}{file_name}"
@@ -161,15 +209,20 @@ def task_differences(folder_path, file_name):
 
 if __name__ == "__main__":
     
-    folder_path = "ben/retail/react/4B"
+    model_size = "4B" # 4B, 8B, 14B, 32B
+    env = "airline" # retail, airline
+    strategy = "fc" # act, react, fc
+    folder_path = f"results/{env}/{strategy}/{model_size}"
+
+    
+    
+    print(f"Sorting files in {folder_path}            --------------------------")
+    run_on_all_files_in_folder(folder_path, sort_by_task_id)
+    print(f"Removing error logs from {folder_path}    --------------------------")
+    run_on_all_files_in_folder(folder_path, remove_error_logs)
+
     # for i in range(1, 6):
     #     task_differences(folder_path, f"num_trials-{i}.json")
-    
-    
-    # print(f"Sorting files in {folder_path}            --------------------------")
-    # run_on_all_files_in_folder(folder_path, sort_by_task_id)
-    # print(f"Removing error logs from {folder_path}    --------------------------")
-    # run_on_all_files_in_folder(folder_path, remove_error_logs)
 
     
     
