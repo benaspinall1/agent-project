@@ -196,7 +196,7 @@ sbatch --array=0-119 tau-experiment.sh
 # Each command ends with its task id for job array submissions
 
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 1    # 0 ben (Done✅)
-sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 2    # 1 ben (In progress)
+sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 2    # 1 ben (Done✅)
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 3    # 2 ben (In progress)
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 4    # 3 ben (In progress)
 sbatch tau-experiment.sh airline act Qwen/Qwen3-4B-Instruct-2507 5    # 4 ben (In progress)
@@ -216,7 +216,7 @@ sbatch tau-experiment.sh airline act Qwen/Qwen3-32B-Instruct-2507 3   # 17
 sbatch tau-experiment.sh airline act Qwen/Qwen3-32B-Instruct-2507 4   # 18
 sbatch tau-experiment.sh airline act Qwen/Qwen3-32B-Instruct-2507 5   # 19
 sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 1  # 20 ben (Done✅)
-sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 2  # 21 ben (In progress)
+sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 2  # 21 ben (Done✅)
 sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 3  # 22 ben (In progress)
 sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 4  # 23 ben (In progress)
 sbatch tau-experiment.sh airline react Qwen/Qwen3-4B-Instruct-2507 5  # 24 ben (In progress)
