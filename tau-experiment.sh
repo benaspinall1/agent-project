@@ -288,9 +288,9 @@ echo
 
 # Usage: set START_INDEX for resume; call before the python run.
 # Updated to:
-#   - If any .info.error exists -> resume from FIRST error task_id
-#   - Else -> resume from (max task_id + 1)
-#   - If last task (total_tasks-1) already completed -> set SKIP_RUN=1 so we don't re-run
+#   - Identify missing task_id gaps among [0..TOTAL_TASKS-1] in the checkpoint
+#   - Resume over the largest contiguous gap of incomplete (missing) tasks
+#   - If no gaps (all tasks present), set SKIP_RUN=1 to avoid re-running
 set_start_index_from_checkpoint() {
   local ckpt="${RESULTS_SUBDIR}/num_trials-${NUM_TRIALS_VAL}.json"
   START_INDEX=0
@@ -298,27 +298,66 @@ set_start_index_from_checkpoint() {
   SKIP_RUN=0
 
   if [[ -f "$ckpt" ]]; then
-    # first and last task_id with a non-empty .info.error, if any
-    local error_start error_end
-    error_start=$(jq -r '[.[] | select(.info.error != null and .info.error != "") | .task_id] | min // empty' "$ckpt" 2>/dev/null || true)
-    error_end=$(jq -r '[.[] | select(.info.error != null and .info.error != "") | .task_id] | max // empty' "$ckpt" 2>/dev/null || true)
-
-    # max task_id overall
-    local max_id
-    max_id=$(jq -r '[.[].task_id] | max // empty' "$ckpt" 2>/dev/null || true)
-
-    if [[ -n "$error_start" && "$error_start" != "null" ]]; then
-      # We found errored tasks; restart from first error, stop at last error (don't redo successful tasks)
-      START_INDEX="$error_start"
-      if [[ -n "$error_end" && "$error_end" != "null" ]]; then
-        END_INDEX=$((error_end + 1))  # end_index is exclusive in run.py
-        echo "Resuming: found errored tasks, restarting from task_id=$START_INDEX up to task_id=$error_end (inclusive)"
-      else
-        echo "Resuming: found errored tasks, restarting from task_id=$START_INDEX"
-      fi
+    # Find missing task_ids (incomplete tasks) in the range [0 .. TOTAL_TASKS-1]
+    # Determine the largest contiguous gap and resume over that interval.
+    local -a missing_ids=()
+    # Use process substitution; requires bash (shebang is /bin/bash)
+    # If jq fails or emits nothing, treat as no present ids -> all are missing.
+    if mapfile -t missing_ids < <(comm -23 <(seq 0 $((TOTAL_TASKS-1))) <(jq -r '.[].task_id' "$ckpt" 2>/dev/null | sort -n | uniq)); then
+      :
     else
-      echo "Checkpoint exists but could not determine task_ids; starting from 0."
+      # On any failure, default to considering all tasks missing
+      mapfile -t missing_ids < <(seq 0 $((TOTAL_TASKS-1)))
+    fi
+
+    if (( ${#missing_ids[@]} == 0 )); then
+      echo "Checkpoint indicates all ${TOTAL_TASKS} tasks are present; no gaps to fill. Skipping run."
+      SKIP_RUN=1
       START_INDEX=0
+      END_INDEX=-1
+    else
+      # Scan for the largest contiguous gap among missing_ids
+      local best_start best_len
+      local curr_start curr_prev
+      best_start=${missing_ids[0]}
+      best_len=1
+      curr_start=${missing_ids[0]}
+      curr_prev=${missing_ids[0]}
+
+      local i id curr_len
+      for (( i=1; i<${#missing_ids[@]}; i++ )); do
+        id=${missing_ids[$i]}
+        if (( id == curr_prev + 1 )); then
+          # still contiguous
+          curr_prev=$id
+        else
+          # end current gap
+          curr_len=$((curr_prev - curr_start + 1))
+          if (( curr_len > best_len )); then
+            best_len=$curr_len
+            best_start=$curr_start
+          fi
+          # start new gap
+          curr_start=$id
+          curr_prev=$id
+        fi
+      done
+      # finalize last gap
+      curr_len=$((curr_prev - curr_start + 1))
+      if (( curr_len > best_len )); then
+        best_len=$curr_len
+        best_start=$curr_start
+      fi
+
+      START_INDEX="$best_start"
+      local end_excl=$((best_start + best_len))
+      if (( end_excl >= TOTAL_TASKS )); then
+        END_INDEX=-1  # run.py treats -1 as "to the end"
+        echo "Resuming: largest incomplete gap is task_id=${START_INDEX}..$((TOTAL_TASKS-1)) (inclusive) [size=${best_len}]"
+      else
+        END_INDEX="$end_excl"
+        echo "Resuming: largest incomplete gap is task_id=${START_INDEX}..$((END_INDEX-1)) (inclusive) [size=${best_len}]"
+      fi
     fi
   else
     echo "No checkpoint file at $ckpt; starting from first task (start-index=0)."

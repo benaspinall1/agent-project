@@ -97,8 +97,7 @@ def show_jobs_to_run(rerun_job_indices):
                 print(f"  sbatch --array={a} tau-experiment.sh")
             else:
                 print(f"  sbatch --array={a}-{b} tau-experiment.sh")
-                
-        
+                       
 def run_on_all_files(function):
     base_path = "ben"
     environments = ["airline", "retail"]
@@ -112,7 +111,6 @@ def run_on_all_files(function):
                 for trial in trials:
                     file = f"{base_path}/{env}/{agent}/{model}/num_trials-{trial}.json"
                     function(file)
-
                     
 def run_on_all_files_in_folder(folder_path, function):
     for file in os.listdir(folder_path):
@@ -120,8 +118,7 @@ def run_on_all_files_in_folder(folder_path, function):
             result = function(os.path.join(folder_path, file))
             if result is not None:  
                 print(result)
-                
-                
+                                
 def print_task_trials(file_path, group_by_task=False):
     """
     For the given file path, print each (task_id, trial) observed in the data.
@@ -168,8 +165,7 @@ def print_task_trials(file_path, group_by_task=False):
             trials_list = uniques
         print(f"  {task_id}: {trials_list}")
     return task_to_trials
-                
-                
+                                
 def task_differences(folder_path, file_name):
     local_file_path = os.path.join(folder_path, "local", file_name)
     main_file_path = os.path.join(folder_path, file_name)
@@ -187,13 +183,14 @@ def task_differences(folder_path, file_name):
     for task_id in local_task_to_trials:
         if task_id not in main_task_to_trials:
             print(f"Task {task_id} is missing from newest file\n")
-            old_to_new.append(task_id)
         else:
             if local_task_to_trials[task_id] != main_task_to_trials[task_id]:
-                print(f"Task {task_id} in the newest file needs an update")
                 for trial in local_task_to_trials[task_id]:
                     if trial not in main_task_to_trials[task_id]:
-                        print(f"Trial {trial} is missing from newest file\n")
+                        # At this point, go into the local file, find the item with task_id and the correct trial number, and append it to the newest file.
+                        # We'll defer full writing/appending logic until after loop; just print info for the user here.
+                        # print(f"-- Trial {trial} for task {task_id} from local file to newest file\n")
+                        old_to_new.append((task_id, trial))
                         
     with open(local_file_path, "r") as f:
         local_data = json.load(f)
@@ -205,13 +202,48 @@ def task_differences(folder_path, file_name):
     old_to_new_set = set(old_to_new)
     added_count = 0
     for item in local_data:
-        if item.get("task_id") in old_to_new_set:
+        if (item.get("task_id"), item.get("trial")) in old_to_new_set:
             main_data.append(copy.deepcopy(item))
             added_count += 1
 
     with open(main_file_path, "w") as f:
         json.dump(main_data, f, indent=4)
     print(f"Appended {added_count} item(s) for {len(old_to_new_set)} task(s) from {local_file_path} to {main_file_path}")
+
+def remove_duplicate_task_trials(file_path):
+    """
+    Removes duplicate (task_id, trial) pairs in the given json file.
+
+    If a pair (task_id, trial) appears more than once, only the first occurrence is kept.
+    The file is overwritten in place if any duplicates are removed.
+    """
+    try:
+        with open(file_path, "r") as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"Could not load {file_path}: {e}")
+        return
+
+    seen = set()
+    new_data = []
+    num_duplicates = 0
+
+    for entry in data:
+        task_id = entry.get("task_id")
+        trial = entry.get("trial")
+        key = (task_id, trial)
+        if key not in seen:
+            seen.add(key)
+            new_data.append(entry)
+        else:
+            num_duplicates += 1
+
+    if num_duplicates > 0:
+        with open(file_path, "w") as f:
+            json.dump(new_data, f, indent=4)
+        print(f"Removed {num_duplicates} duplicate (task_id, trial) pairs from {file_path}")
+    else:
+        print(f"No duplicate (task_id, trial) pairs found in {file_path}")
 
 
 
@@ -221,9 +253,13 @@ if __name__ == "__main__":
     env = "airline" # retail, airline
     strategy = "react" # act, react, fc
     folder_path = f"results/{env}/{strategy}/{model_size}"
-
+    
+    for i in range(1, 6):
+        task_differences(folder_path, f"num_trials-{i}.json")
     
     
+    print(f"Removing duplicate task trials from {folder_path} --------------------------")
+    run_on_all_files_in_folder(folder_path, remove_duplicate_task_trials)
     print(f"Sorting files in {folder_path}            --------------------------")
     run_on_all_files_in_folder(folder_path, sort_by_task_id)
     print(f"Removing error logs from {folder_path}    --------------------------")

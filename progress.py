@@ -153,9 +153,9 @@ def detailed_progress(folder_path):
 if __name__ == "__main__":
   
   model_size = "4B" # 4B, 8B, 14B, 32B
-  env = "retail" # retail, airline
-  strategy = "act" # act, react, fc
+  env = "airline" # retail, airline
+  strategy = "fc" # act, react, fc
   folder_path = f"results/{env}/{strategy}/{model_size}"
   
-  progress_by_model(model_size)
-#   detailed_progress(folder_path) # more fined grained view of progress
+progress_by_model(model_size)
+# detailed_progress(folder_path) # more fined grained view of progress
